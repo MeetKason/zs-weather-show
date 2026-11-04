@@ -1,0 +1,11 @@
+node_modules
+.DS_Store
+dist
+dist-ssr
+*.local
+.vscode
+.idea
+pnpm-lock
+deploy/data/
+deploy/uploads/
+docs/superpowers/

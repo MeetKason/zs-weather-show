@@ -1,0 +1,35 @@
+services:
+  backend:
+    build:
+      context: ../../go-view-serve
+    container_name: goview-backend
+    restart: unless-stopped
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      GOVIEW_HTTP_URL: http://110.40.180.132:8082/
+    ports:
+      - "127.0.0.1:8083:8083"
+    volumes:
+      - ./data:/app/data
+      - ./uploads:/app/uploads
+    healthcheck:
+      test: ["CMD-SHELL", "test -f /app/goview.war"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+  frontend:
+    build:
+      context: ..
+    container_name: goview-frontend
+    restart: unless-stopped
+    depends_on:
+      backend:
+        condition: service_healthy
+    ports:
+      - "0.0.0.0:8082:80"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
